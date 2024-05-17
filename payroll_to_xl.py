@@ -57,16 +57,16 @@ def extract_data_from_page(page_text):
     soc_sec_regex = r"Soc Sec Tax (\d+\.\d{2})"
     # taxable_comp_regex = r"TOTAL GROSS PAY [\d.]+\s([\d,]+\.\d{2})"
     reg_wages_regex = r"Reg wages [\d.]+\s[\d.]+\s([\d,]+\.\d{2})"
-    salary_regex = r"Salary\s+(\d+\.\d+)"
+    salary_regex = r"TOTAL GROSS PAY ([\d.]+)\s[\d.]+ TOTAL DEDUCTIONS"
     vac_regex = r"Vac HR\s+\d+\.\d+\s+\d+\.\d+\s+(\d+\.\d+)\s+\d+\.\d+"
     ot_regex = r"OT [\d.]+\s[\d.]+\s([\d,]+\.\d{2})"
     holiday_regex = r"HOLIDAY [\d.]+\s[\d.]+\s([\d,]+\.\d{2})"
     sick_regex = r"SICK HOURLY [\d.]+\s[\d.]+\s([\d,]+\.\d{2})"
-    bonus_regex = r"Bonus [\d.]+\s[\d.]+\s([\d,]+\.\d{2})"
+    bonus_regex = r"Bonus [\d.]+\s([\d.]+)\s[\d,]+\.\d{2}"
     scorp_med_regex = r"SCorp Med\s+(\d+\.\d{2})"
     scorp_denta_regex = r"SCorp Denta\s+(\d+\.\d{2})"
-    anthem_regex = r"Anthem Med\s+(\d+\.\d+)"
-    dental_regex = r"\* DDental\s+(\d+\.\d+)"
+    anthem_regex = r"Anthem Med((\s+\d+\.\d+){2})?"
+    dental_regex = r"\* DDental((\s+\d+\.\d+){2})?"
     vision_regex = r"Vision \([A-Z]\) (\d+\.\d+)"
     four01k_amount_regex = r"401k\s+(\d+\.00)"
     four01k_percent_regex = r"401k\s+(\d+\.(?!00)\d{2})"
@@ -130,8 +130,8 @@ def extract_data_from_page(page_text):
         'Bonus Before Tax': bonus.group(1) if bonus else '',
         'SCorp Med  W/H' : scorp_med.group(1) if scorp_med else '',
         'SCorp DI' : scrop_denta.group(1) if scrop_denta else '',
-        'UHC / Anthem Med W/H' : anthem.group(1) if anthem else '',
-        "Ddental W/H" : dental.group(1) if dental else '',
+        'UHC / Anthem Med W/H' : anthem.group(2).split()[0] if anthem.group(1) else '0',
+        "Ddental W/H" : dental.group(2).split()[0] if dental.group(1) else '0',
         "Vision  W/H + O" : vision.group(1) if vision else '',
         "401K by Amt" : four01k_amount.group(1) if four01k_amount else '',
         "401k by %" : four01k_percent.group(1) if four01k_percent else '',
